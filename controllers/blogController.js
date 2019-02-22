@@ -24,6 +24,7 @@ let getAllBlog = (req, res) =>{
 // end get all blogs
 
 let viewByBlogId = (req, res) =>{
+  console.log(req.user);
   BlogModel.findOne({'blogId': req.params.blogId},(err, result)=>{
     if(err){
       console.log(err);
@@ -50,7 +51,9 @@ let createBlog = (req, res)=>{
     category: req.body.category,
     author: req.body.author,
     created: today
-  })
+  }
+  )
+  
 
   let tags = (req.body.tags != undefined && req.body.tags != null && req.body.tags != '') ? req.body.tags.split(',') : [];
 
@@ -63,6 +66,7 @@ let createBlog = (req, res)=>{
       res.send(result)
     }
   })
+  
 
 }
 let editBlog = (req, res) =>{

@@ -39,4 +39,6 @@ let blogSchema = new Schema({
   }
 })
 
+
+
 mongoose.model('Blog', blogSchema);
