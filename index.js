@@ -4,12 +4,15 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
-
+const globalErrorMiddleware = require('./middlewares/appErrorHandler');
+const routeLoggerMiddleware = require('./middlewares/routeLogger');
+// middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
-}))
-
+}));
+app.use(globalErrorMiddleware.globalErrorHandler);
+app.use(routeLoggerMiddleware.logIp);
 // Bootstrap models
 let modelsPath = './models';
 fs.readdirSync(modelsPath).forEach(function(file){
@@ -28,6 +31,8 @@ fs.readdirSync(routesPath).forEach(function(file){
   }
 })
 // end bootstrap route
+// calling global 404 handler after route
+app.use(globalErrorMiddleware.globalNotFoundHandler);
 
 //listening the server - creating a local server
 app.listen(appConfig.port, () => {
