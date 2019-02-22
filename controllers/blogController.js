@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
+const response = require('./../libs/responseLib');
 // Importing the model here
 const BlogModel = mongoose.model('Blog');
 
@@ -10,13 +11,15 @@ let getAllBlog = (req, res) =>{
             .lean()
             .exec((err, result)=>{
               if(err){
-                console.log(err)
-                res.send(err)
+                console.log(err);
+                let apiResponse = response.generate(true, 'Failed To Find Blog Details', 500, null)
+                res.send(apiResponse);
               } else if(result == undefined || result == null || result == '' ){
-                console.log('No Blog Found');
-                res.send('No Blog Found');
+                let apiResponse = response.generate(true, 'No blog Found', 404, null)
+                res.send(apiResponse);
               } else {
-                res.send(result);
+                let apiResponse = response.generate(false, 'All Blog Details Found', 200, result);
+                res.send(apiResponse);
               }
             })
             
@@ -27,13 +30,16 @@ let viewByBlogId = (req, res) =>{
   console.log(req.user);
   BlogModel.findOne({'blogId': req.params.blogId},(err, result)=>{
     if(err){
-      console.log(err);
-      res.send(err);
+      console.log('Error Occured.');
+      let apiResponse = response.generate(true,'Error occured', 500, null);
+      res.send(apiResponse);
     }else if( result == undefined || result == null || result == ''){
       console.log('No Blog found');
-      res.send('No Blog Found');
+      let apiResponse = response.generate(true, 'Blog Not Found', 404, null)
+      res.send(apiResponse)
     }else {
-      res.send(result);
+      let apiResponse = response.generate(false, 'Blog Found Successfully.', 200, result)
+      res.send(apiResponse)
     }
   })
 }
@@ -60,10 +66,13 @@ let createBlog = (req, res)=>{
   newBlog.tags = tags;
   newBlog.save((err, result)=>{
     if(err){
-      console.log(err);
-      res.send(err)
+      console.log('Error Occured.');
+      let apiResponse = response.generate(true, 'Error Occured.', 500, null)
+      res.send(apiResponse);
     }else {
-      res.send(result)
+      console.log('Success in blog creation');
+      let apiResponse = response.generate(false, 'Blog created successfully.', 200, result);
+      res.send(apiResponse);
     }
   })
   
@@ -73,14 +82,17 @@ let editBlog = (req, res) =>{
   let options = req.body;
   BlogModel.update({'blogId': req.params.blogId}, options, { multi: true}).exec((err, result)=>{
     if(err){
-      console.log(err);
-      res.send(err);
+      console.log('Error Occured.');
+      let apiResponse = response.generate(true, 'Error Occured.', 500, null)
+      res.send(apiResponse)
     }else if (result == undefined || result == null || result == ''){
-      console.log('No Blog Found')
-      res.send("No Blog Found")
+      console.log('Blog Not Found.')
+      let apiResponse = response.generate(true, 'Blog Not Found', 404, null)
+      res.send(apiResponse);
     } else {
-      res.send(result);
-      console.log('Blog updated successfully');
+      console.log('Blog Edited Successfully')
+      let apiResponse = response.generate(false, 'Blog Edited Successfully.', 200, result)
+      res.send(apiResponse);
     }
   })
 }
@@ -88,13 +100,17 @@ let editBlog = (req, res) =>{
 let deleteBlog = (req, res) =>{
   BlogModel.remove({ 'blogId': req.params.blogId }, (err, result)=>{
     if(err){
-      console.log(err);
-      res.send(err);
+      console.log('Error Occured.')
+      let apiResponse = response.generate(true, 'Error Occured.', 500, null)
+       res.send(apiResponse);
     } else if (result == undefined || result == null || result == ''){
-      console.log('No Blog Found')
-      res.send("No Blog Found")
+      console.log('Blog Not Found.')
+      let apiResponse = response.generate(true, 'Blog Not Found.', 404, null)
+      res.send(apiResponse);
     } else {
-      res.send(result);
+      console.log('Blog Deletion Success')
+      let apiResponse = response.generate(false, 'Blog Deleted Successfully', 200, result)
+      res.send(apiResponse);
     }
   })
 }
