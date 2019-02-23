@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 // import schema
 const Schema = mongoose.Schema;
-
+const timeLib = require('./../libs/timeLib');
 let blogSchema = new Schema({
   blogId: {
     type: String,
@@ -34,9 +34,14 @@ let blogSchema = new Schema({
   },
   tags: [],
   created: {
-    type: Date,
-    default: Date.now
-  }
+    type: String,
+    time: timeLib.getLocalTime()
+}, 
+lastModified: {
+  type: String,
+  time: timeLib.getLocalTime()
+}
+
 })
 
 

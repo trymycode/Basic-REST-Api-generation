@@ -2,10 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const response = require('./../libs/responseLib');
+const timelib = require('./../libs/timeLib');
 // Importing the model here
 const BlogModel = mongoose.model('Blog');
 
 let getAllBlog = (req, res) =>{
+
   BlogModel.find()
             .select('-_v -_id')
             .lean()
@@ -46,9 +48,8 @@ let viewByBlogId = (req, res) =>{
 // end viewByBlogId
 
 let createBlog = (req, res)=>{
-  var today = Date.now();
+  
   let blogId = shortid.generate();
-
   let newBlog = new BlogModel({
     blogId: blogId,
     title: req.body.title,
@@ -56,7 +57,9 @@ let createBlog = (req, res)=>{
     bodyHtml: req.body.bodyHtml,
     category: req.body.category,
     author: req.body.author,
-    created: today
+    created: timelib.getLocalTime(),
+    lastModified: timelib.getLocalTime()
+    
   }
   )
   
