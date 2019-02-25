@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const globalErrorMiddleware = require('./middlewares/appErrorHandler');
 const routeLoggerMiddleware = require('./middlewares/routeLogger');
+const helmet = require('helmet');
 // middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -13,6 +14,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(globalErrorMiddleware.globalErrorHandler);
 app.use(routeLoggerMiddleware.logIp);
+app.use(helmet());
+
+
 // Bootstrap models
 let modelsPath = './models';
 fs.readdirSync(modelsPath).forEach(function(file){
