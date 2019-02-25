@@ -3,12 +3,13 @@ const blogController = require('./../controllers/blogController');
 const appConfig = require('./../config/appconfig');
 
 const example = require('./../middlewares/example');
+const auth = require('./../middlewares/auth');
 
 let setRouter = (app) =>{
   
   let baseUrl = appConfig.apiVersion + '/blogs';
 
-  app.get(baseUrl+ '/all', blogController.getAllBlog);
+	app.get(baseUrl+ '/all', auth.isAuthenticated, blogController.getAllBlog);
   	/**
 	 * @api {get} /api/v1/blogs/all Get all blogs
 	 * @apiVersion 0.0.1
@@ -50,7 +51,7 @@ let setRouter = (app) =>{
 	 */
 
 
-  app.get(baseUrl+'/view/:blogId',example.exampleMiddleware,blogController.viewByBlogId);
+  app.get(baseUrl+'/view/:blogId',auth.isAuthenticated, blogController.viewByBlogId);
      /**
 	 * @api {get} /api/v1/blogs/view/:blogId Get a single blog
 	 * @apiVersion 0.0.1
@@ -92,7 +93,7 @@ let setRouter = (app) =>{
 	   }
 	 */
 
-  app.post(baseUrl+ '/create', blogController.createBlog);
+  app.post(baseUrl+ '/create',auth.isAuthenticated,blogController.createBlog);
 /**
 	 * @api {post} /api/v1/blogs/create Create blog
 	 * @apiVersion 0.0.1
@@ -137,7 +138,7 @@ let setRouter = (app) =>{
 	   }
 	 */
 
-  app.put(baseUrl+'/:blogId/edit' ,blogController.editBlog );
+  app.put(baseUrl+'/:blogId/edit', auth.isAuthenticated, blogController.editBlog );
 /**
 	 * @api {put} /api/v1/blogs/:blogId/edit Edit blog by blogId
 	 * @apiVersion 0.0.1
@@ -179,7 +180,7 @@ let setRouter = (app) =>{
 	   }
 	 */
 
-  app.post(baseUrl + '/:blogId/delete' , blogController.deleteBlog);
+  app.post(baseUrl + '/:blogId/delete' ,auth.isAuthenticated, blogController.deleteBlog);
   
     /**
 	 * @api {post} /api/v1/blogs/:blogId/delete Delete blog by blogId
